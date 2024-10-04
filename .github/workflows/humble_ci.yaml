@@ -1,12 +1,8 @@
 name: Humble CI: Build and Test
+
 on:
   workflow_call:
-    #inputs:
-    #  config-path:
-    #    required: true
-    #    type: string
-    secrets:
-      inherit: true
+
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
