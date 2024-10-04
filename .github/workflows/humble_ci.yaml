@@ -1,0 +1,42 @@
+name: Humble CI: Build and Test
+on:
+  workflow_call:
+    #inputs:
+    #  config-path:
+    #    required: true
+    #    type: string
+    secrets:
+      inherit: true
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    container:
+      image: ghcr.io/naturerobots/ros2_humble_build:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+      options:
+        --user root
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Get packages for which to run CI (restrict CI to packages in the callee's repository)
+        # Defines for which packages we run out continuous integration: Build and test.
+        # Restricts build to these pkgs with "packages-up-to", so dependencies will get built as well.
+        # Restricts test to these pkgs with "packages-select", so only these packages get tested (dependencies are not being tested).
+        # Not restricting pkgs would
+        # - increase build times (due to multi-package repositories, we would build packages not needed by the packages we want to build/test).
+        # - potentially require getting more source dependencies (due to multi-package repositories, we woudl potentially need additional source deps)
+        # - increase test times (we would test dependencies, which should already get tested in their own repository)
+        run: echo PACKAGES_FOR_CI=$(colcon list -n --base-paths $GITHUB_WORKSPACE) >> $GITHUB_ENV
+      - name: Build and test
+        uses: ros-tooling/action-ros-ci@0.3.13
+        with:
+          package-name: ${{env.PACKAGES_FOR_CI}}
+          target-ros2-distro: humble
+          vcs-repo-file-url: $GITHUB_WORKSPACE/source_dependencies.yaml
+          rosdep-check: true
+          import-token: ${{ secrets.ORGANIZATION_PRIVATE_PAT }}
