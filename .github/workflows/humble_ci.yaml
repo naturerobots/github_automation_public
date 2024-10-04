@@ -1,4 +1,4 @@
-name: Humble CI: Build and Test
+name: Humble CI - Build and Test
 
 on:
   workflow_call:
