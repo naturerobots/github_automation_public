@@ -11,7 +11,7 @@ jobs:
       contents: read
       packages: read
     container:
-      image: ghcr.io/naturerobots/ros2_humble_build:latest
+      image: ghcr.io/naturerobots/ros2_jazzy_build:latest
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
