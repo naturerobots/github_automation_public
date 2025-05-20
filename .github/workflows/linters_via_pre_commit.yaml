@@ -3,12 +3,17 @@ name: Linters via pre commit
 on:
   workflow_call:
 
+inputs:
+  ros_distro:
+    required: true
+    type: string
+
 jobs:
   linters_via_pre_commit:
     name: Linters via pre commit
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/naturerobots/ros2_jazzy_build:latest
+      image: "ghcr.io/naturerobots/ros2_${{ inputs.ros_distro }}_build:latest"
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
