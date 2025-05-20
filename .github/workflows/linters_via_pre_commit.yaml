@@ -6,18 +6,16 @@ on:
 jobs:
   linters_via_pre_commit:
     name: Linters via pre commit
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/naturerobots/ros2_jazzy_build:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+      options:
+        --user root
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
-      with:
-        python-version: 3.10.6 
-    - name: Install system hooks
-      run: sudo add-apt-repository universe &&\
-           sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg &&\
-           echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null &&\
-           sudo apt update &&\
-           sudo apt install -qq ros-jazzy-ament-uncrustify\
     - uses: pre-commit/action@v3.0.1
       with:
         extra_args: --all-files --hook-stage manual
