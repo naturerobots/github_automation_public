@@ -12,6 +12,8 @@ jobs:
       packages: read
     container:
       image: ghcr.io/naturerobots/ros2_humble_build:latest
+      env:
+        PRE_COMMIT_HOME: /cache/pre-commit
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -22,6 +24,13 @@ jobs:
     - uses: actions/setup-python@v5
       with:
         python-version: '3.10.6'
+    - name: Set up pre-commit cache
+      uses: actions/cache@v4
+      with:
+        path: /cache/pre-commit
+        key: ${{ runner.os }}-pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
+        restore-keys: |
+            ${{ runner.os }}-pre-commit-
     - uses: pre-commit/action@v3.0.1
       with:
-        extra_args: --all-files --hook-stage manual
+        extra_args: --all-files
