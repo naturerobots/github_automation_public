@@ -2,11 +2,10 @@ name: ROS CI - Build and Test
 
 on:
   workflow_call:
-
-inputs:
-  ros_distro:
-    required: true
-    type: string
+    inputs:
+      ros_distro:
+        required: true
+        type: string
 
 jobs:
   build_and_test:
