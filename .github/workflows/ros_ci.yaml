@@ -1,7 +1,12 @@
-name: Humble CI - Build and Test
+name: ROS CI - Build and Test
 
 on:
   workflow_call:
+
+inputs:
+  ros_distro:
+    required: true
+    type: string
 
 jobs:
   build_and_test:
@@ -10,7 +15,7 @@ jobs:
       contents: read
       packages: read
     container:
-      image: ghcr.io/naturerobots/ros2_humble_build:latest
+      image: ghcr.io/naturerobots/ros2_${{ inputs.ros_distro }}_build:latest
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -32,7 +37,7 @@ jobs:
         uses: ros-tooling/action-ros-ci@0.3.13
         with:
           package-name: ${{env.PACKAGES_FOR_CI}}
-          target-ros2-distro: humble
+          target-ros2-distro: ${{ inputs.ros_distro }}
           vcs-repo-file-url: $GITHUB_WORKSPACE/source_dependencies.yaml
           rosdep-check: true
           import-token: ${{ secrets.ORGANIZATION_PRIVATE_PAT }}
