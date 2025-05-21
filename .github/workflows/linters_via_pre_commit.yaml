@@ -20,8 +20,12 @@ jobs:
         sudo apt update
     - name: Install system hooks
       run: sudo apt install -qq ros-jazzy-ament-cmake-uncrustify
-    - name: Setup system hooks
-      run: source /opt/ros/jazzy/setup.bash
-    - uses: pre-commit/action@v3.0.1
+    - name: Install pre-commit
+      run: python -m pip install pre-commit && python -m pip freeze --local
+      shell: bash
+    - uses: actions/cache@v4
       with:
-        extra_args: --all-files --hook-stage manual
+        path: ~/.cache/pre-commit
+        key: pre-commit-3|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml') }}
+    - run: source /opt/ros/jazzy/setup.bash && pre-commit run --show-diff-on-failure --color=always --all-files
+      shell: bash
