@@ -33,7 +33,7 @@ jobs:
         # - increase test times (we would test dependencies, which should already get tested in their own repository)
         run: echo PACKAGES_FOR_CI=$(colcon list -n --base-paths $GITHUB_WORKSPACE) >> $GITHUB_ENV
       - name: Build and test
-        uses: ros-tooling/action-ros-ci@v0.4
+        uses: ros-tooling/action-ros-ci@v0.4.8
         with:
           package-name: ${{env.PACKAGES_FOR_CI}}
           target-ros2-distro: ${{ inputs.ros_distro }}
